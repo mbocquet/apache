@@ -1,0 +1,11 @@
+---
+- name: modules
+  community.general.apache2_module:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+  loop: "{{ apache_modules }}"
+  become: true
+  notify: reload apache
+  tags:
+    - apache
+    - modules
