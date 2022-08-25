@@ -16,7 +16,9 @@
     - vhost
 
 - import_tasks: modules.yml
-  when: apache_modules is defined
+  when:
+    - apache_modules is defined
+    - "'apache2.service' in services"
 
 # - name: "openssl_dhparam"
 #   openssl_dhparam:
