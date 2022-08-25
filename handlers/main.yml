@@ -1,14 +1,14 @@
 ---
 # handlers file for apache
 - name: restart apache
-  service:
+  ansible.builtin.service:
     name: apache2
     state: restarted
   when:
     - "'apache2.service' in services"
 
 - name: reload apache
-  service:
+  ansible.builtin.service:
     name: apache2
     state: reloaded
   when:
