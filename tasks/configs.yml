@@ -1,0 +1,68 @@
+---
+- name: config
+  ansible.builtin.template:
+    src: "{{ item.template }}"
+    dest: "/etc/apache2/conf-available/{{ item.name }}.conf"
+    mode: 0644
+  notify: reload apache
+  loop: "{{ apache_configs }}"
+  when:
+    - item.enabled is not defined
+      or item.enabled|lower in ['yes', 'true']
+    - item.available is not defined
+      or item.available|lower in ['yes', 'true']
+  become: true
+  tags:
+    - apache
+    - config
+    - template
+
+- name: config absence
+  ansible.builtin.file:
+    path: "/etc/apache2/conf-available/{{ item.name }}.conf"
+    state: absent
+  loop: "{{ apache_configs }}"
+  when:
+    - item.available is defined
+    - item.available|lower in ['no', 'false']
+  become: true
+  tags:
+    - apache
+    - config
+    - template
+
+- name: link presence
+  ansible.builtin.file:
+    src: "../conf-available/{{ item.name }}.conf"
+    path:
+      "/etc/apache2/conf-enabled/{{ item.name }}.conf"
+    state: link
+  notify: reload apache
+  loop: "{{ apache_configs }}"
+  when:
+    - not ansible_check_mode
+    - item.available is not defined
+      or item.available|lower in ['yes', 'true']
+    - item.enabled is not defined
+      or item.enabled
+  become: true
+  tags:
+    - apache
+    - config
+    - link
+
+- name: link absence
+  ansible.builtin.file:
+    path:
+      "/etc/apache2/conf-enabled/{{ item.name }}.conf"
+    state: absent
+  notify: reload apache
+  loop: "{{ apache_configs }}"
+  when:
+    - item.enabled is defined
+    - not item.enabled
+  become: true
+  tags:
+    - apache
+    - config
+    - link

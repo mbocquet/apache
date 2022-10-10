@@ -18,6 +18,32 @@ apache_dhparam:
 # to use /etc/apache2/dhparams.pem :
 # apache_dhparam_file: "/etc/apache2/{{ apache_dhparam.name }}.pem"
 
+# apache_modules : dict variable to define modules states
+#
+# apache_modules:
+#   - name: headers
+#     state: present
+#   - name: remoteip
+#     state: present
+#   - name: rewrite
+#     state: present
+#   - name: autoindex
+#     state: absent
+
+# apache_configs : dict variable to define configs (files under
+# /etc/apache2/conf-available and /etc/apache2/conf-enabled)
+# See example template at templates/apache-remoteip.conf.j2
+#
+# apache_configs:
+#   - name: security
+#     enabled: true
+#     state: present
+#   - name: remoteip
+#     enabled: true
+#     state: present
+#     template: apache-remoteip.conf.j2
+#     remote_ip_internal_proxy: 10.0.0.0/24
+
 # apache_sites : dict variable to define sites
 #
 # apache_sites:
