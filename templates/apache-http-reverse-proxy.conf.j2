@@ -1,0 +1,27 @@
+# {{ ansible_managed }}. role: {{ role_name }}, template: apache-http-reverse-proxy.conf.j2
+
+<VirtualHost *:{{ item.exposed_port | default(80) }}>
+    ServerName {{ item.servername }}
+{% if item.cert_name is defined %}
+    RewriteEngine On
+    RewriteCond %{HTTPS} Off
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+{% endif %}
+    CustomLog ${APACHE_LOG_DIR}/{{ item.name }}_access.log combined
+    ErrorLog ${APACHE_LOG_DIR}/{{ item.name }}_error.log
+</VirtualHost>
+{% if item.cert_name is defined %}
+
+<VirtualHost *:{{ item.exposed_port | default(443) }}>
+    ServerName {{ item.servername }}
+    Include /etc/letsencrypt/options-ssl-apache.conf
+    SSLCertificateFile /etc/letsencrypt/live/{{ item.cert_name }}/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/{{ item.cert_name }}/privkey.pem
+    <Location "{{ item.url }}">
+        ProxyPass "{{ item.protocol | default('http') }}://{{ item.host }}{% if item.port is defined %}:{{ item.port }}{% endif %}/"
+        ProxyPassReverse "{{ item.protocol | default('http') }}://{{ item.host }}{% if item.port is defined %}:{{ item.port }}{% endif %}/"
+    </Location>
+    CustomLog ${APACHE_LOG_DIR}/{{ item.name }}_access.log combined
+    ErrorLog ${APACHE_LOG_DIR}/{{ item.name }}_error.log
+</VirtualHost>
+{% endif %}
