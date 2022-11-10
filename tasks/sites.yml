@@ -16,7 +16,7 @@
 
 - name: vhost
   ansible.builtin.template:
-    src: "apache-{{ item.template | default('http-site') }}.conf.j2"
+    src: "{{ item.template | default('apache-http-site.conf.j2') }}"
     dest: "/etc/apache2/sites-available/{{ item.name }}.conf"
     mode: 0644
   notify: reload apache
