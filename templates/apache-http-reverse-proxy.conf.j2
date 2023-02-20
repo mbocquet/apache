@@ -4,13 +4,14 @@
     ServerName {{ item.servername }}
 {% if item.cert_name is defined %}
     RewriteEngine On
-    RewriteCond %{HTTPS} Off
+    RewriteCond %{HTTPS} !On
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-{% endif %}
+{% else %}
     <Location "{{ item.url }}">
         ProxyPass "{{ item.protocol | default('http') }}://{{ item.host }}{% if item.port is defined %}:{{ item.port }}{% endif %}/"
         ProxyPassReverse "{{ item.protocol | default('http') }}://{{ item.host }}{% if item.port is defined %}:{{ item.port }}{% endif %}/"
     </Location>
+{% endif %}
     CustomLog ${APACHE_LOG_DIR}/{{ item.name }}_access.log combined
     ErrorLog ${APACHE_LOG_DIR}/{{ item.name }}_error.log
 </VirtualHost>
