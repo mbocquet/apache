@@ -15,12 +15,14 @@
     - facts
     - vhost
 
-- import_tasks: configs.yml
+- name: configs
+  import_tasks: configs.yml
   when:
     - apache_configs is defined
     - "'apache2.service' in services"
 
-- import_tasks: modules.yml
+- name: modules
+  import_tasks: modules.yml
   when:
     - apache_modules is defined
     - "'apache2.service' in services"
@@ -35,7 +37,8 @@
 #     - ssl
 #     - dhparam
 
-- import_tasks: sites.yml
+- name: sites
+  import_tasks: sites.yml
   when:
     - apache_sites is defined
     - apache_sites | length > 0
