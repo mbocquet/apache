@@ -44,6 +44,9 @@ apache_dhparam:
 #     template: apache-remoteip.conf.j2
 #     remote_ip_internal_proxy: 10.0.0.0/24
 
+# apache_backup_vhosts : boolean to backup previous vhost file(s). Defaults to omit / false
+# apache_backup_vhosts: false
+
 # apache_sites : dict variable to define sites
 #
 # apache_sites:

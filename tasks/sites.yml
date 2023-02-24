@@ -19,6 +19,7 @@
     src: "{{ item.template | default('apache-http-site.conf.j2') }}"
     dest: "/etc/apache2/sites-available/{{ item.name }}.conf"
     mode: 0644
+    backup: "{{ apache_backup_vhosts | default(omit) }}"
   notify: reload apache
   loop: "{{ apache_sites }}"
   when:
