@@ -2,6 +2,11 @@
 
 <VirtualHost *:{{ item.exposed_port | default(80) }}>
     ServerName {{ item.servername }}
+{% if item.headers is defined %}
+{% for header in item.headers %}
+    Header set {{ header }}
+{% endfor %}
+{% endif %}
 {% if item.cert_name is defined %}
     RewriteEngine On
     RewriteCond %{HTTPS} !On
@@ -19,6 +24,11 @@
 
 <VirtualHost *:{{ item.exposed_port | default(443) }}>
     ServerName {{ item.servername }}
+{% if item.headers is defined %}
+{% for header in item.headers %}
+    Header set {{ header }}
+{% endfor %}
+{% endif %}
     Include /etc/letsencrypt/options-ssl-apache.conf
     SSLCertificateFile /etc/letsencrypt/live/{{ item.cert_name }}/fullchain.pem
     SSLCertificateKeyFile /etc/letsencrypt/live/{{ item.cert_name }}/privkey.pem
