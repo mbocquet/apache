@@ -1,5 +1,5 @@
 ---
-- name: config
+- name: template
   ansible.builtin.template:
     src: "{{ item.template }}"
     dest: "/etc/apache2/conf-available/{{ item.name }}.conf"
@@ -7,10 +7,11 @@
   notify: reload apache
   loop: "{{ apache_configs }}"
   when:
+    - item.template is defined
     - item.enabled is not defined
-      or item.enabled|lower in ['yes', 'true']
+      or item.enabled
     - item.available is not defined
-      or item.available|lower in ['yes', 'true']
+      or item.available
   become: true
   tags:
     - apache
@@ -24,7 +25,7 @@
   loop: "{{ apache_configs }}"
   when:
     - item.available is defined
-    - item.available|lower in ['no', 'false']
+    - not item.available
   become: true
   tags:
     - apache
@@ -34,15 +35,13 @@
 - name: link presence
   ansible.builtin.file:
     src: "../conf-available/{{ item.name }}.conf"
-    path:
-      "/etc/apache2/conf-enabled/{{ item.name }}.conf"
+    path: "/etc/apache2/conf-enabled/{{ item.name }}.conf"
     state: link
   notify: reload apache
   loop: "{{ apache_configs }}"
   when:
-    - not ansible_check_mode
     - item.available is not defined
-      or item.available|lower in ['yes', 'true']
+      or item.available
     - item.enabled is not defined
       or item.enabled
   become: true
