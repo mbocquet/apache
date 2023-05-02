@@ -63,9 +63,10 @@ apache_dhparam:
 #     servername: 'example.org www.example.org'
 #     exposed_port: 443
 #     web_root: /var/www/example.org/html
-#     certname: www.example.org
+#     cert_name: www.example.org
+#     force_https: true
 #     # apache-example.org.conf.j2 should exist as apache template somewhere
-#     template: example.org
+#     template: apache-example.org.conf.j2
 #     # available and enabled are defaults so non mandatory
 #     # available: true
 #     # enabled: true
