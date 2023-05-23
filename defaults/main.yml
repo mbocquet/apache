@@ -29,6 +29,7 @@ apache_dhparam:
 #     state: present
 #   - name: autoindex
 #     state: absent
+#     force: true
 
 # apache_configs : dict variable to define configs (files under
 # /etc/apache2/conf-available and /etc/apache2/conf-enabled)

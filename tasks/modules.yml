@@ -3,6 +3,7 @@
   community.general.apache2_module:
     name: "{{ item.name }}"
     state: "{{ item.state }}"
+    force: "{{ item.force | default(omit) }}"
   loop: "{{ apache_modules }}"
   become: true
   notify: reload apache
