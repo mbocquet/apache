@@ -2,9 +2,22 @@
 
 <VirtualHost *:{{ item.exposed_port | default(80) }}>
     ServerName {{ item.servername }}
+{% if item.serveralias is defined %}
+{% for alias in item.serveralias %}
+    ServerAlias {{ alias }}
+{% endfor %}
+{% endif %}
 {% if item.headers is defined %}
+    <IfModule mod_headers.c>
 {% for header in item.headers %}
-    Header set {{ header }}
+        Header {{ header }}
+{% endfor %}
+    </IfModule>
+{% endif %}
+{% if item.rewrites is defined %}
+    RewriteEngine On
+{% for rewrite in item.rewrites %}
+    {{ rewrite }}
 {% endfor %}
 {% endif %}
 {% if item.cert_name is defined and item.force_https is defined and item.force_https %}
@@ -13,8 +26,8 @@
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 {% else %}
     <Location "{{ item.url }}">
-        ProxyPass "{{ item.protocol | default('http') }}://{{ item.host }}{% if item.port is defined %}:{{ item.port }}{% endif %}/"
-        ProxyPassReverse "{{ item.protocol | default('http') }}://{{ item.host }}{% if item.port is defined %}:{{ item.port }}{% endif %}/"
+        ProxyPass "{{ item.protocol | default('http') }}://{{ item.upstream }}/"
+        ProxyPassReverse "{{ item.protocol | default('http') }}://{{ item.upstream }}/"
     </Location>
 {% endif %}
     CustomLog ${APACHE_LOG_DIR}/{{ item.name }}_access.log combined
@@ -24,17 +37,31 @@
 
 <VirtualHost *:{{ item.exposed_port | default(443) }}>
     ServerName {{ item.servername }}
+{% if item.serveralias is defined %}
+{% for alias in item.serveralias %}
+    ServerAlias {{ alias }}
+{% endfor %}
+{% endif %}
 {% if item.headers is defined %}
+    <IfModule mod_headers.c>
 {% for header in item.headers %}
-    Header set {{ header }}
+        Header {{ header }}
+{% endfor %}
+    </IfModule>
+{% endif %}
+{% if item.rewrites is defined %}
+    RewriteEngine On
+{% for rewrite in item.rewrites %}
+    {{ rewrite }}
 {% endfor %}
 {% endif %}
     Include /etc/letsencrypt/options-ssl-apache.conf
+    Protocols h2 http/1.1
     SSLCertificateFile /etc/letsencrypt/live/{{ item.cert_name }}/fullchain.pem
     SSLCertificateKeyFile /etc/letsencrypt/live/{{ item.cert_name }}/privkey.pem
     <Location "{{ item.url }}">
-        ProxyPass "{{ item.protocol | default('http') }}://{{ item.host }}{% if item.port is defined %}:{{ item.port }}{% endif %}/"
-        ProxyPassReverse "{{ item.protocol | default('http') }}://{{ item.host }}{% if item.port is defined %}:{{ item.port }}{% endif %}/"
+        ProxyPass "{{ item.protocol | default('http') }}://{{ item.upstream }}/"
+        ProxyPassReverse "{{ item.protocol | default('http') }}://{{ item.upstream }}/"
     </Location>
     CustomLog ${APACHE_LOG_DIR}/{{ item.name }}_access.log combined
     ErrorLog ${APACHE_LOG_DIR}/{{ item.name }}_error.log
