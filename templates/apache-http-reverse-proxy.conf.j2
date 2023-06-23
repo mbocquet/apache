@@ -7,6 +7,11 @@
     ServerAlias {{ alias }}
 {% endfor %}
 {% endif %}
+{% if item.cert_name is defined and item.force_https is defined and item.force_https %}
+    RewriteEngine On
+    RewriteCond %{HTTPS} !On
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+{% else %}
 {% if item.headers is defined %}
     <IfModule mod_headers.c>
 {% for header in item.headers %}
@@ -20,11 +25,6 @@
     {{ rewrite }}
 {% endfor %}
 {% endif %}
-{% if item.cert_name is defined and item.force_https is defined and item.force_https %}
-    RewriteEngine On
-    RewriteCond %{HTTPS} !On
-    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-{% else %}
     <Location "{{ item.url }}">
         ProxyPass "{{ item.protocol | default('http') }}://{{ item.upstream }}/"
         ProxyPassReverse "{{ item.protocol | default('http') }}://{{ item.upstream }}/"
