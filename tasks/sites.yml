@@ -3,9 +3,6 @@
   ansible.builtin.file:
     path: "{{ item.documentroot }}"
     state: directory
-    mode: 02775
-    owner: www-data
-    group: www-data
   loop: "{{ apache_sites }}"
   when:
     - item.documentroot is defined
