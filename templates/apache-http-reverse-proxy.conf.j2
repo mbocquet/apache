@@ -7,7 +7,7 @@
     ServerAlias {{ alias }}
 {% endfor %}
 {% endif %}
-{% if item.cert_name is defined and item.force_https is defined and item.force_https %}
+{% if item.cert_name is defined and ( item.force_https is undefined or item.force_https ) %}
     RewriteEngine On
     RewriteCond %{HTTPS} !On
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
@@ -17,6 +17,9 @@
 {% for header in item.headers %}
         Header {{ header }}
 {% endfor %}
+{% if item.robots_allowed is undefined or not item.robots_allowed %}
+        Header always set X-Robots-Tag "none"
+{% endif %}
     </IfModule>
 {% endif %}
 {% if item.rewrites is defined %}
@@ -47,6 +50,9 @@
 {% for header in item.headers %}
         Header {{ header }}
 {% endfor %}
+{% if item.robots_allowed is undefined or not item.robots_allowed %}
+        Header always set X-Robots-Tag "none"
+{% endif %}
     </IfModule>
 {% endif %}
 {% if item.rewrites is defined %}
