@@ -1,6 +1,6 @@
 ---
 # tasks file for apache
-- name: package
+- name: Package
   ansible.builtin.package:
     name: apache2
   become: true
@@ -8,26 +8,26 @@
     - apache
     - package
 
-- name: service_facts
+- name: Service facts
   ansible.builtin.service_facts:
   tags:
     - apache
     - facts
     - vhost
 
-- name: configs
+- name: Configs
   import_tasks: configs.yml
   when:
     - apache_configs is defined
     - "'apache2.service' in services"
 
-- name: modules
+- name: Modules
   import_tasks: modules.yml
   when:
     - apache_modules is defined
     - "'apache2.service' in services"
 
-# - name: "openssl_dhparam"
+# - name: Openssl dhparam
 #   openssl_dhparam:
 #     path: "{{ apache_dhparam_file | default('/etc/ssl/dhparams.pem') }}"
 #     size: "{{ apache_dhparam.bits | default(omit) }}"
@@ -37,7 +37,7 @@
 #     - ssl
 #     - dhparam
 
-- name: sites
+- name: Sites
   import_tasks: sites.yml
   when:
     - apache_sites is defined
