@@ -1,8 +1,11 @@
 ---
-- name: documentroot
+- name: Documentroot
   ansible.builtin.file:
     path: "{{ item.documentroot }}"
     state: directory
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
   loop: "{{ apache_sites }}"
   when:
     - item.documentroot is defined
@@ -11,7 +14,7 @@
     - apache
     - documentroot
 
-- name: vhost
+- name: Vhost
   ansible.builtin.template:
     src: "{{ item.template | default('apache-http-site.conf.j2') }}"
     dest: "/etc/apache2/sites-available/{{ item.name }}.conf"
@@ -22,30 +25,30 @@
   when:
     - item.name != '000-default'
     - item.enabled is not defined
-      or item.enabled|lower in ['yes', 'true']
+      or item.enabled
     - item.available is not defined
-      or item.available|lower in ['yes', 'true']
+      or item.available
   become: true
   tags:
     - apache
     - vhost
     - template
 
-- name: vhost absence
+- name: Vhost absence
   ansible.builtin.file:
     path: "/etc/apache2/sites-available/{{ item.name }}.conf"
     state: absent
   loop: "{{ apache_sites }}"
   when:
     - item.available is defined
-    - item.available|lower in ['no', 'false']
+    - not item.available
   become: true
   tags:
     - apache
     - vhost
     - template
 
-- name: link presence
+- name: Link presence
   ansible.builtin.file:
     src: "../sites-available/{{ item.name }}.conf"
     path:
@@ -57,7 +60,7 @@
   when:
     - not ansible_check_mode
     - item.available is not defined
-      or item.available|lower in ['yes', 'true']
+      or item.available
     - item.enabled is not defined
       or item.enabled
   become: true
@@ -66,7 +69,7 @@
     - vhost
     - link
 
-- name: link absence
+- name: Link absence
   ansible.builtin.file:
     path:
       "/etc/apache2/sites-enabled/{{ item.index |
