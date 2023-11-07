@@ -63,7 +63,7 @@ apache_dhparam:
 #     index: '00'
 #     servername: 'example.org www.example.org'
 #     exposed_port: 443
-#     web_root: /var/www/example.org/html
+#     documentroot: /var/www/example.org/html
 #     cert_name: www.example.org
 #     force_https: true
 #     # apache-example.org.conf.j2 should exist as apache template somewhere
@@ -74,7 +74,7 @@ apache_dhparam:
 #   # reverse proxy to remotehost:80
 #   - name: remotehost
 #     servername: 'remotehost remotehost.local.net'
-#     web_root: /var/www
+#     documentroot: /var/www
 #     url: /
 #     exposed_port: 80
 #     host: remotehost
