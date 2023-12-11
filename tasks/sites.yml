@@ -24,8 +24,6 @@
   loop: "{{ apache_sites }}"
   when:
     - item.name != '000-default'
-    - item.enabled is not defined
-      or item.enabled
     - item.available is not defined
       or item.available
   become: true
