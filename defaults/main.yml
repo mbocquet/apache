@@ -62,7 +62,7 @@ apache_dhparam:
 #   - name: www.example.org
 #     index: '00'
 #     servername: 'example.org www.example.org'
-#     exposed_port: 443
+#     port: 443
 #     documentroot: /var/www/example.org/html
 #     cert_name: www.example.org
 #     force_https: true
@@ -76,7 +76,7 @@ apache_dhparam:
 #     servername: 'remotehost remotehost.local.net'
 #     documentroot: /var/www
 #     url: /
-#     exposed_port: 80
+#     port: 80
 #     host: remotehost
 #     port: 80
 #     available: true
@@ -86,7 +86,7 @@ apache_dhparam:
 #     url: /myapp
 #     host: localhost
 #     servername: myapp.local.net
-#     exposed_port: 80
+#     port: 80
 #     port: 5000
 #     # apache-myapp.conf.j2 should exist as apache template somewhere
 #     template: myapp
