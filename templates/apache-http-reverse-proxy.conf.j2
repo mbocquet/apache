@@ -1,13 +1,13 @@
 # {{ ansible_managed }}. role: {{ role_name }}, template: apache-http-reverse-proxy.conf.j2
 
-<VirtualHost *:{{ item.exposed_port | default(80) }}>
+<VirtualHost *:{{ item.port | default(80) }}>
     ServerName {{ item.servername }}
 {% if item.serveralias is defined %}
 {% for alias in item.serveralias %}
     ServerAlias {{ alias }}
 {% endfor %}
 {% endif %}
-{% if item.cert_name is defined and ( item.force_https is undefined or item.force_https ) %}
+{% if ( item.https is defined and item.https is true ) and ( item.force_https is undefined or item.force_https is defined and item.force_https is true ) %}
     RewriteEngine On
     RewriteCond %{HTTPS} !On
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
@@ -28,17 +28,19 @@
     {{ rewrite }}
 {% endfor %}
 {% endif %}
-    <Location "{{ item.url }}">
-        ProxyPass "{{ item.protocol | default('http') }}://{{ item.upstream }}/"
-        ProxyPassReverse "{{ item.protocol | default('http') }}://{{ item.upstream }}/"
+{% for location in item.locations %}
+    <Location "{{ location.url }}">
+        ProxyPass "{{ location.upstream }}/"
+        ProxyPassReverse "{{ location.upstream }}/"
     </Location>
+{% endfor %}
 {% endif %}
     CustomLog ${APACHE_LOG_DIR}/{{ item.name }}_access.log combined
     ErrorLog ${APACHE_LOG_DIR}/{{ item.name }}_error.log
 </VirtualHost>
-{% if item.cert_name is defined %}
+{% if item.https is defined and item.https is true %}
 
-<VirtualHost *:{{ item.exposed_port | default(443) }}>
+<VirtualHost *:{{ item.port | default(443) }}>
     ServerName {{ item.servername }}
 {% if item.serveralias is defined %}
 {% for alias in item.serveralias %}
@@ -63,12 +65,22 @@
 {% endif %}
     Include /etc/letsencrypt/options-ssl-apache.conf
     Protocols h2 http/1.1
+{% if item.fullchain is defined and item.fullchain | length %}
+    SSLCertificateFile {{ item.fullchain }}
+{% else %}
     SSLCertificateFile /etc/letsencrypt/live/{{ item.cert_name }}/fullchain.pem
+{% endif %}
+{% if item.privkey is defined and item.privkey | length %}
+    SSLCertificateKeyFile {{ item.privkey }}
+{% else %}
     SSLCertificateKeyFile /etc/letsencrypt/live/{{ item.cert_name }}/privkey.pem
-    <Location "{{ item.url }}">
-        ProxyPass "{{ item.protocol | default('http') }}://{{ item.upstream }}/"
-        ProxyPassReverse "{{ item.protocol | default('http') }}://{{ item.upstream }}/"
+{% endif %}
+{% for location in item.locations %}
+    <Location "{{ location.url }}">
+        ProxyPass "{{ location.upstream }}/"
+        ProxyPassReverse "{{ location.upstream }}/"
     </Location>
+{% endfor %}
     CustomLog ${APACHE_LOG_DIR}/{{ item.name }}_access.log combined
     ErrorLog ${APACHE_LOG_DIR}/{{ item.name }}_error.log
 </VirtualHost>
