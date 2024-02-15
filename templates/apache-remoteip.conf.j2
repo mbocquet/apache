@@ -2,5 +2,9 @@
 
 <IfModule remoteip_module>
     RemoteIPHeader X-Real-IP
-    RemoteIPInternalProxy {{ item.remote_ip_internal_proxy }}
+{% if item.remote_ip_internal_proxy is defined %}
+{% for proxy in item.remote_ip_internal_proxy %}
+    RemoteIPInternalProxy {{ proxy }}
+{% endfor %}
+{% endif %}
 </IfModule>

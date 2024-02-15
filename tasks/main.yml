@@ -2,7 +2,9 @@
 # tasks file for apache
 - name: Package
   ansible.builtin.package:
-    name: apache2
+    name:
+      - apache2
+      - libapache2-mod-fcgid
   become: true
   tags:
     - apache
