@@ -1,6 +1,11 @@
 ---
 # defaults file for apache
 
+# apache_packages : additional packages to install alongside apache
+apache_packages:
+  - apache2
+  # - libapache2-mod-fcgid
+
 # apache_dhparam : parameters to construct apache dhparam file
 apache_dhparam:
   path: /etc/ssl

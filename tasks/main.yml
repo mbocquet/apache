@@ -3,7 +3,7 @@
 - name: Package
   ansible.builtin.package:
     name:
-      - apache2
+      "{{ apache_packages }}"
   become: true
   tags:
     - apache
