@@ -28,12 +28,14 @@
     {{ rewrite }}
 {% endfor %}
 {% endif %}
+{% if item.locations is defined %}
 {% for location in item.locations %}
     <Location "{{ location.url }}">
         ProxyPass "{{ location.upstream }}/"
         ProxyPassReverse "{{ location.upstream }}/"
     </Location>
 {% endfor %}
+{% endif %}
 {% endif %}
     CustomLog ${APACHE_LOG_DIR}/{{ item.name }}_access.log combined
     ErrorLog ${APACHE_LOG_DIR}/{{ item.name }}_error.log
@@ -64,7 +66,6 @@
 {% endfor %}
 {% endif %}
     Include /etc/letsencrypt/options-ssl-apache.conf
-    Protocols h2 http/1.1
 {% if item.fullchain is defined and item.fullchain | length %}
     SSLCertificateFile {{ item.fullchain }}
 {% else %}
@@ -75,12 +76,14 @@
 {% else %}
     SSLCertificateKeyFile /etc/letsencrypt/live/{{ item.cert_name }}/privkey.pem
 {% endif %}
+{% if item.locations is defined %}
 {% for location in item.locations %}
     <Location "{{ location.url }}">
         ProxyPass "{{ location.upstream }}/"
         ProxyPassReverse "{{ location.upstream }}/"
     </Location>
 {% endfor %}
+{% endif %}
     CustomLog ${APACHE_LOG_DIR}/{{ item.name }}_access.log combined
     ErrorLog ${APACHE_LOG_DIR}/{{ item.name }}_error.log
 </VirtualHost>
