@@ -76,25 +76,20 @@ apache_dhparam:
 #     # enabled: true
 #   # reverse proxy to remotehost:80
 #   - name: remotehost
-#     servername: 'remotehost remotehost.local.net'
-#     documentroot: /var/www
-#     url: /
-#     port: 80
-#     host: remotehost
-#     port: 80
+#     template: apache-http-reverse-proxy.conf.j2
+#     servername: remotehost.local.net
+#     locations:
+#       - url: /
+#         upstream: http://remotehost:80
 #     available: true
 #     enabled: true
 #   # reverse proxy to localhost:5000
 #   - name: myapp
-#     url: /myapp
-#     host: localhost
+#     template: apache-http-reverse-proxy.conf.j2
 #     servername: myapp.local.net
-#     port: 80
-#     port: 5000
-#     # apache-myapp.conf.j2 should exist as apache template somewhere
-#     template: myapp
-#     available: true
-#     enabled: true
+#     locations:
+#       - url: /
+#         upstream: http://localhost:5000
 #   # remove site file and link for myapp2
 #   - name: myapp2
 #     available: false
