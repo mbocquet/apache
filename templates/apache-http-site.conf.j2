@@ -3,4 +3,6 @@
 <VirtualHost {{ item.host | default('*') }}:{{ item.port | default(80) }}>
     ServerName {{ item.servername }}
     DocumentRoot {{ item.documentroot }}
+    CustomLog ${APACHE_LOG_DIR}/{{ item.name }}_access.log combined
+    ErrorLog ${APACHE_LOG_DIR}/{{ item.name }}_error.log
 </VirtualHost>
