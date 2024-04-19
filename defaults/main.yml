@@ -21,15 +21,15 @@ apache_dhparam:
 # apache_modules : dict variable to define modules states
 #
 # apache_modules:
+#   - name: autoindex
+#     state: absent
+#     force: true
 #   - name: headers
 #     state: present
 #   - name: remoteip
 #     state: present
-#   - name: rewrite
-#     state: present
-#   - name: autoindex
-#     state: absent
-#     force: true
+#   # here in a more compact way
+#   - { name: rewrite, state: present }
 
 # apache_configs : dict variable to define configs (files under
 # /etc/apache2/conf-available and /etc/apache2/conf-enabled)
