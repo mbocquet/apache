@@ -31,6 +31,12 @@
 {% if item.locations is defined %}
 {% for location in item.locations %}
     <Location "{{ location.url }}">
+{% if location.auth is defined %}
+        AuthType Basic
+        AuthName "{{ location.auth.name }}"
+        AuthUserFile "{{ location.auth.file }}"
+        Require valid-user
+{% endif %}
         ProxyPass "{{ location.upstream }}/"
         ProxyPassReverse "{{ location.upstream }}/"
     </Location>
@@ -79,6 +85,12 @@
 {% if item.locations is defined %}
 {% for location in item.locations %}
     <Location "{{ location.url }}">
+{% if location.auth is defined %}
+        AuthType Basic
+        AuthName "{{ location.auth.name }}"
+        AuthUserFile "{{ location.auth.file }}"
+        Require valid-user
+{% endif %}
         ProxyPass "{{ location.upstream }}/"
         ProxyPassReverse "{{ location.upstream }}/"
     </Location>
