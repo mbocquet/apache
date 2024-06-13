@@ -37,6 +37,9 @@
         AuthUserFile "{{ location.auth.file }}"
         Require valid-user
 {% endif %}
+{% if location.proxypassmatch is defined %}
+        ProxyPassMatch {{ location.proxypassmatch }}
+{% endif %}
         ProxyPass "{{ location.upstream }}/"
         ProxyPassReverse "{{ location.upstream }}/"
     </Location>
@@ -90,6 +93,9 @@
         AuthName "{{ location.auth.name }}"
         AuthUserFile "{{ location.auth.file }}"
         Require valid-user
+{% endif %}
+{% if location.proxypassmatch is defined %}
+        ProxyPassMatch {{ location.proxypassmatch }}
 {% endif %}
         ProxyPass "{{ location.upstream }}/"
         ProxyPassReverse "{{ location.upstream }}/"
