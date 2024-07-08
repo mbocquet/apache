@@ -17,9 +17,6 @@
 {% for header in item.headers %}
         Header {{ header }}
 {% endfor %}
-{% if item.robots_allowed is undefined or not item.robots_allowed %}
-        Header always set X-Robots-Tag "none"
-{% endif %}
     </IfModule>
 {% endif %}
 {% if item.rewrites is defined %}
@@ -63,9 +60,6 @@
 {% for header in item.headers %}
         Header {{ header }}
 {% endfor %}
-{% if item.robots_allowed is undefined or not item.robots_allowed %}
-        Header always set X-Robots-Tag "none"
-{% endif %}
     </IfModule>
 {% endif %}
 {% if item.rewrites is defined %}
