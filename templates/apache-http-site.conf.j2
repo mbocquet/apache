@@ -2,7 +2,119 @@
 
 <VirtualHost {{ item.host | default('*') }}:{{ item.port | default(80) }}>
     ServerName {{ item.servername }}
+{% if item.serveralias is defined %}
+{% for alias in item.serveralias %}
+    ServerAlias {{ alias }}
+{% endfor %}
+{% endif %}
+{% if ( item.https is defined and item.https is true ) and ( item.force_https is undefined or item.force_https is defined and item.force_https is true ) %}
+    RewriteEngine On
+    RewriteCond %{HTTPS} !On
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+{% else %}
+{% if item.headers is defined %}
+    <IfModule mod_headers.c>
+{% for header in item.headers %}
+        Header {{ header }}
+{% endfor %}
+{% if item.robots_allowed is undefined or not item.robots_allowed %}
+        Header always set X-Robots-Tag "none"
+{% endif %}
+    </IfModule>
+{% endif %}
+{% if item.rewrites is defined %}
+    RewriteEngine On
+{% for rewrite in item.rewrites %}
+    {{ rewrite }}
+{% endfor %}
+{% endif %}
     DocumentRoot {{ item.documentroot }}
+{% if item.directoryindex is defined %}
+    DirectoryIndex {{ item.directoryindex }}
+{% endif %}
+    <Directory "{{ item.documentroot }}">
+        AllowOverride All
+        Require all granted
+    </Directory>
+{% if item.locations is defined %}
+{% for location in item.locations %}
+    <Location "{{ location.url }}">
+{% if location.auth is defined %}
+        AuthType Basic
+        AuthName "{{ location.auth.name }}"
+        AuthUserFile "{{ location.auth.file }}"
+        Require valid-user
+{% endif %}
+{% if location.proxypassmatch is defined %}
+        ProxyPassMatch {{ location.proxypassmatch }}
+{% endif %}
+    </Location>
+{% endfor %}
+{% endif %}
+{% endif %}
     CustomLog ${APACHE_LOG_DIR}/{{ item.name }}_access.log combined
     ErrorLog ${APACHE_LOG_DIR}/{{ item.name }}_error.log
 </VirtualHost>
+{% if item.https is defined and item.https is true %}
+
+<VirtualHost *:{{ item.port | default(443) }}>
+    ServerName {{ item.servername }}
+{% if item.serveralias is defined %}
+{% for alias in item.serveralias %}
+    ServerAlias {{ alias }}
+{% endfor %}
+{% endif %}
+    DocumentRoot {{ item.documentroot }}
+{% if item.directoryindex is defined %}
+    DirectoryIndex {{ item.directoryindex }}
+{% endif %}
+    <Directory "{{ item.documentroot }}">
+        AllowOverride All
+        Require all granted
+    </Directory>
+{% if item.headers is defined %}
+    <IfModule mod_headers.c>
+{% for header in item.headers %}
+        Header {{ header }}
+{% endfor %}
+{% if item.robots_allowed is undefined or not item.robots_allowed %}
+        Header always set X-Robots-Tag "none"
+{% endif %}
+    </IfModule>
+{% endif %}
+{% if item.rewrites is defined %}
+    RewriteEngine On
+{% for rewrite in item.rewrites %}
+    {{ rewrite }}
+{% endfor %}
+{% endif %}
+    Include /etc/letsencrypt/options-ssl-apache.conf
+{% if item.fullchain is defined and item.fullchain | length %}
+    SSLCertificateFile {{ item.fullchain }}
+{% else %}
+    SSLCertificateFile /etc/letsencrypt/live/{{ item.cert_name }}/fullchain.pem
+{% endif %}
+{% if item.privkey is defined and item.privkey | length %}
+    SSLCertificateKeyFile {{ item.privkey }}
+{% else %}
+    SSLCertificateKeyFile /etc/letsencrypt/live/{{ item.cert_name }}/privkey.pem
+{% endif %}
+{% if item.locations is defined %}
+{% for location in item.locations %}
+    <Location "{{ location.url }}">
+{% if location.auth is defined %}
+        AuthType Basic
+        AuthName "{{ location.auth.name }}"
+        AuthUserFile "{{ location.auth.file }}"
+        Require valid-user
+{% endif %}
+{% if location.proxypassmatch is defined %}
+        ProxyPassMatch {{ location.proxypassmatch }}
+{% endif %}
+    </Location>
+{% endfor %}
+{% endif %}
+    CustomLog ${APACHE_LOG_DIR}/{{ item.name }}_access.log combined
+    ErrorLog ${APACHE_LOG_DIR}/{{ item.name }}_error.log
+</VirtualHost>
+{% endif %}
