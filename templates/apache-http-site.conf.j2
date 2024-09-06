@@ -1,6 +1,7 @@
 # {{ ansible_managed }}. role: {{ role_name }}, template: apache-http-site.conf.j2
 
 <VirtualHost {{ item.host | default('*') }}:{{ item.port | default(80) }}>
+    ServerAdmin {{ item.serveradmin | default('webmaster@localhost') }}
     ServerName {{ item.servername }}
 {% if item.serveralias is defined %}
 {% for alias in item.serveralias %}
@@ -28,7 +29,7 @@
     {{ rewrite }}
 {% endfor %}
 {% endif %}
-    DocumentRoot {{ item.documentroot }}
+    DocumentRoot "{{ item.documentroot }}"
 {% if item.directoryindex is defined %}
     DirectoryIndex {{ item.directoryindex }}
 {% endif %}
@@ -58,13 +59,14 @@
 {% if item.https is defined and item.https is true %}
 
 <VirtualHost *:{{ item.port | default(443) }}>
+    ServerAdmin {{ item.serveradmin | default('webmaster@localhost') }}
     ServerName {{ item.servername }}
 {% if item.serveralias is defined %}
 {% for alias in item.serveralias %}
     ServerAlias {{ alias }}
 {% endfor %}
 {% endif %}
-    DocumentRoot {{ item.documentroot }}
+    DocumentRoot "{{ item.documentroot }}"
 {% if item.directoryindex is defined %}
     DirectoryIndex {{ item.directoryindex }}
 {% endif %}
