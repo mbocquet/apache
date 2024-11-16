@@ -16,7 +16,9 @@ None.
 
 ## Install this role as submodule in a git repository
 
-`git submodule add https://git.sekoya.org/mb/apache.git roles/apache`
+```sh
+git submodule add https://git.sekoya.org/mb/apache.git roles/apache
+```
 
 ## Example Playbook
 
