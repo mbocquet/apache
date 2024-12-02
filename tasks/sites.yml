@@ -76,8 +76,8 @@
   notify: reload apache
   loop: "{{ apache_sites }}"
   when:
-    - item.enabled is defined
-    - not item.enabled
+    ( item.enabled is defined and not item.enabled )
+    or ( item.available is defined and not item.available )
   become: true
   tags:
     - apache
