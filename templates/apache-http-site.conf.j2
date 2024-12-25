@@ -58,7 +58,7 @@
 </VirtualHost>
 {% if item.https is defined and item.https is true %}
 
-<VirtualHost *:{{ item.port | default(443) }}>
+<VirtualHost {{ item.host | default('*') }}:{{ item.port | default(443) }}>
     ServerAdmin {{ item.serveradmin | default('webmaster@localhost') }}
     ServerName {{ item.servername }}
 {% if item.serveralias is defined %}
