@@ -1,0 +1,12 @@
+# {{ ansible_managed }}. role: {{ role_name }}, template: apache-status.conf.j2
+
+<VirtualHost {{ item.host | default('*') }}:{{ item.port | default(80) }}>
+    ServerAdmin {{ item.serveradmin | default('webmaster@localhost') }}
+    ServerName {{ item.servername }}
+    <Location "/server-status">
+        SetHandler server-status
+        Require host localhost
+    </Location>
+    CustomLog ${APACHE_LOG_DIR}/{{ item.name }}_access.log combined
+    ErrorLog ${APACHE_LOG_DIR}/{{ item.name }}_error.log
+</VirtualHost>
