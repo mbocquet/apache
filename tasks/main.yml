@@ -18,19 +18,19 @@
     - vhost
 
 - name: Configs
-  import_tasks: configs.yml
+  ansible.builtin.import_tasks: configs.yml
   when:
     - apache_configs is defined
     - "'apache2.service' in services"
 
 - name: Modules
-  import_tasks: modules.yml
+  ansible.builtin.import_tasks: modules.yml
   when:
     - apache_modules is defined
     - "'apache2.service' in services"
 
 # - name: Openssl dhparam
-#   openssl_dhparam:
+#   ansible.builtin.openssl_dhparam:
 #     path: "{{ apache_dhparam_file | default('/etc/ssl/dhparams.pem') }}"
 #     size: "{{ apache_dhparam.bits | default(omit) }}"
 #   become: true
@@ -40,7 +40,7 @@
 #     - dhparam
 
 - name: Sites
-  import_tasks: sites.yml
+  ansible.builtin.import_tasks: sites.yml
   when:
     - apache_sites is defined
     - apache_sites | length > 0
