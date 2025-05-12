@@ -1,4 +1,4 @@
-# {{ ansible_managed }}. role: {{ role_name }}, template: apache-http-site.conf.j2
+# Ansible managed. role: {{ role_name }}, template: apache-http-site.conf.j2
 
 <VirtualHost {{ item.host | default('*') }}:{{ item.port | default(80) }}>
     ServerAdmin {{ item.serveradmin | default('webmaster@localhost') }}
