@@ -29,14 +29,10 @@
 {% if item.locations is defined %}
 {% for location in item.locations %}
     <Location "{{ location.url }}">
-{% if location.auth is defined %}
-        AuthType Basic
-        AuthName "{{ location.auth.name }}"
-        AuthUserFile "{{ location.auth.file }}"
-        Require valid-user
-{% endif %}
-{% if location.proxypassmatch is defined %}
-        ProxyPassMatch {{ location.proxypassmatch }}
+{% if location.directives is defined %}
+{% for directive in location.directives %}
+        {{ directive }}
+{% endfor %}
 {% endif %}
         ProxyPass "{{ location.upstream }}/"
         ProxyPassReverse "{{ location.upstream }}/"
@@ -84,14 +80,10 @@
 {% if item.locations is defined %}
 {% for location in item.locations %}
     <Location "{{ location.url }}">
-{% if location.auth is defined %}
-        AuthType Basic
-        AuthName "{{ location.auth.name }}"
-        AuthUserFile "{{ location.auth.file }}"
-        Require valid-user
-{% endif %}
-{% if location.proxypassmatch is defined %}
-        ProxyPassMatch {{ location.proxypassmatch }}
+{% if location.directives is defined %}
+{% for directive in location.directives %}
+        {{ directive }}
+{% endfor %}
 {% endif %}
         ProxyPass "{{ location.upstream }}/"
         ProxyPassReverse "{{ location.upstream }}/"
