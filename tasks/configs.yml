@@ -1,10 +1,10 @@
 ---
-- name: template
+- name: Config template
   ansible.builtin.template:
     src: "{{ item.template }}"
     dest: "/etc/apache2/conf-available/{{ item.name }}.conf"
     mode: 0644
-  notify: reload apache
+  notify: Reload apache
   loop: "{{ apache_configs }}"
   when:
     - item.template is defined
@@ -18,7 +18,7 @@
     - config
     - template
 
-- name: config absence
+- name: Config absence
   ansible.builtin.file:
     path: "/etc/apache2/conf-available/{{ item.name }}.conf"
     state: absent
@@ -32,12 +32,12 @@
     - config
     - template
 
-- name: link presence
+- name: Link presence
   ansible.builtin.file:
     src: "../conf-available/{{ item.name }}.conf"
     path: "/etc/apache2/conf-enabled/{{ item.name }}.conf"
     state: link
-  notify: reload apache
+  notify: Reload apache
   loop: "{{ apache_configs }}"
   when:
     - item.available is not defined
@@ -50,12 +50,12 @@
     - config
     - link
 
-- name: link absence
+- name: Link absence
   ansible.builtin.file:
     path:
       "/etc/apache2/conf-enabled/{{ item.name }}.conf"
     state: absent
-  notify: reload apache
+  notify: Reload apache
   loop: "{{ apache_configs }}"
   when:
     - item.enabled is defined

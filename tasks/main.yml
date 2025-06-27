@@ -5,7 +5,7 @@
     name:
       "{{ apache_packages }}"
   become: true
-  notify: restart apache
+  notify: Restart apache
   tags:
     - apache
     - package
