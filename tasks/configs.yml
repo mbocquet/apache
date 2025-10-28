@@ -3,7 +3,7 @@
   ansible.builtin.template:
     src: "{{ item.template }}"
     dest: "/etc/apache2/conf-available/{{ item.name }}.conf"
-    mode: 0644
+    mode: "0644"
   notify: Reload apache
   loop: "{{ apache_configs }}"
   when:
