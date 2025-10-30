@@ -96,6 +96,7 @@ apache_dhparam:
 #       - url: /
 #         upstream: http://localhost:5000
 #   # remove site file and link for myapp2
+#   # `enabled: false` is useless if `available: false`
 #   - name: myapp2
 #     available: false
 #     enabled: false
