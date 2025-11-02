@@ -17,7 +17,7 @@
 - name: Vhost
   ansible.builtin.template:
     src: "{{ item.template | default('apache-http-site.conf.j2') }}"
-    dest: "/etc/apache2/sites-available/{{ item.name }}.conf"
+    dest: /etc/apache2/sites-available/{{ item.name }}.conf
     mode: "0644"
     backup: "{{ apache_backup_vhosts | default(omit) }}"
   notify: Reload apache
@@ -34,7 +34,7 @@
 
 - name: Vhost absence
   ansible.builtin.file:
-    path: "/etc/apache2/sites-available/{{ item.name }}.conf"
+    path: /etc/apache2/sites-available/{{ item.name }}.conf
     state: absent
   loop: "{{ apache_sites }}"
   when:
@@ -48,10 +48,10 @@
 
 - name: Link presence
   ansible.builtin.file:
-    src: "../sites-available/{{ item.name }}.conf"
+    src: ../sites-available/{{ item.name }}.conf
     path:
-      "/etc/apache2/sites-enabled/{{ item.index |
-      default('') }}{{ item.name }}.conf"
+      /etc/apache2/sites-enabled/{{ item.index |
+      default('') }}{{ item.name }}.conf
     state: link
   notify: Reload apache
   loop: "{{ apache_sites }}"
@@ -70,8 +70,8 @@
 - name: Link absence
   ansible.builtin.file:
     path:
-      "/etc/apache2/sites-enabled/{{ item.index |
-      default('') }}{{ item.name }}.conf"
+      /etc/apache2/sites-enabled/{{ item.index |
+      default('') }}{{ item.name }}.conf
     state: absent
   notify: Reload apache
   loop: "{{ apache_sites }}"

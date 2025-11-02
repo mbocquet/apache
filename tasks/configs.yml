@@ -2,7 +2,7 @@
 - name: Config template
   ansible.builtin.template:
     src: "{{ item.template }}"
-    dest: "/etc/apache2/conf-available/{{ item.name }}.conf"
+    dest: /etc/apache2/conf-available/{{ item.name }}.conf
     mode: "0644"
   notify: Reload apache
   loop: "{{ apache_configs }}"
@@ -20,7 +20,7 @@
 
 - name: Config absence
   ansible.builtin.file:
-    path: "/etc/apache2/conf-available/{{ item.name }}.conf"
+    path: /etc/apache2/conf-available/{{ item.name }}.conf
     state: absent
   loop: "{{ apache_configs }}"
   when:
@@ -34,8 +34,8 @@
 
 - name: Link presence
   ansible.builtin.file:
-    src: "../conf-available/{{ item.name }}.conf"
-    path: "/etc/apache2/conf-enabled/{{ item.name }}.conf"
+    src: ../conf-available/{{ item.name }}.conf
+    path: /etc/apache2/conf-enabled/{{ item.name }}.conf
     state: link
   notify: Reload apache
   loop: "{{ apache_configs }}"
@@ -53,7 +53,7 @@
 - name: Link absence
   ansible.builtin.file:
     path:
-      "/etc/apache2/conf-enabled/{{ item.name }}.conf"
+      /etc/apache2/conf-enabled/{{ item.name }}.conf
     state: absent
   notify: Reload apache
   loop: "{{ apache_configs }}"
